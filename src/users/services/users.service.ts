@@ -1,26 +1,71 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  HttpException,
+  HttpStatus,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { Repository } from 'typeorm';
+import { User } from '../entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(
+    @Inject('USERS_REPOSITORY')
+    private userRepository: Repository<User>,
+  ) {}
+
+  async create(user: CreateUserDto) {
+    try {
+      const password = await bcrypt.hash(user.password, 10);
+      await this.userRepository.save({ ...user, password });
+      return user;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+    }
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    return await this.userRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOneByEmail(email: string) {
+    const user = await this.userRepository.findOne({
+      where: { email },
+    });
+    if (!user) {
+      throw new NotFoundException('This user does not exist');
+    }
+    return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async findOneUserWithFiles(id: string) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['files'],
+    });
+    if (!user) {
+      throw new NotFoundException('This user does not exist');
+    }
+    return user;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async update(id: string, user: UpdateUserDto) {
+    try {
+      return await this.userRepository.update({ id }, { ...user });
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async remove(id: string) {
+    try {
+      return await this.userRepository.delete(id);
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+    }
   }
 }
