@@ -19,7 +19,7 @@
 
   services:
   backend:
-    image: postgres:rds
+    image: node:22
     container_name: postgres_db_rds
     restart: always
     ports:
