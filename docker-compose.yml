@@ -17,13 +17,17 @@
 #   postgres_data:
 
 
-  services:
+version: '3.8'
+
+services:
   backend:
-    image: node:22
-    container_name: postgres_db_rds
+    container_name: backend_app
+    image: node:22  # Puedes cambiarlo por un Dockerfile si necesitas más personalización
     restart: always
     ports:
-      - '5432:5432'
+      - '3000:3000'  # Ajusta el puerto si es diferente en tu app NestJS
+    env_file:
+      - .env  # Carga las variables de entorno desde un archivo .env
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
@@ -31,5 +35,7 @@
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
       NODE_ENV: production
-    env_file:
-      - .env
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+    command: ["npm", "run", "start:prod"]  # Comando para iniciar NestJS
