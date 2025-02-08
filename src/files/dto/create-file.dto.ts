@@ -4,6 +4,7 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  IsUrl,
   IsUUID,
   Length,
   ValidateNested,
@@ -43,14 +44,11 @@ export class CreateFileDto {
   key: string;
 
   @IsOptional()
-  @ValidateNested()
-  @Type(() => UrlDto)
-  @IsObject()
+  @IsUrl()
   @ApiPropertyOptional({
     description: 'URL asociada al archivo.',
-    type: UrlDto,
   })
-  url: UrlDto;
+  url: string;
 
   @IsOptional()
   @IsString()

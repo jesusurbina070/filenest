@@ -21,11 +21,8 @@ export class File {
   @Column({ type: 'varchar', length: 255 })
   key: string;
 
-  @Column('jsonb')
-  url: {
-    view: string;
-    download: string;
-  };
+  @Column({ type: 'varchar', length: 255 })
+  url: string;
 
   @Column({ type: 'varchar', length: 255 })
   size: string;

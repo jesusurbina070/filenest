@@ -28,12 +28,7 @@ export class FilesService {
 
     try {
       await this.awsS3Services.uploadFile(key, fileData.buffer, contentType);
-      const viewUrl = await this.awsS3Services.getFileUrl(key);
-
-      const url = {
-        view: viewUrl,
-        download: downloadUrl,
-      };
+      const url = await this.awsS3Services.getFileUrl(key);
 
       return await this.fileRepository.save({
         ...file,

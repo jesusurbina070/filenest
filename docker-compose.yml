@@ -1,46 +1,53 @@
-version: '3.9'
-
 services:
-filenest-backend: 
-  container_name: filenest-backend
-  build: 
-    context: .
-    target: production
-    args: 
-     - PORT=${PORT}
-  ports:
+  filenest-backend:
+    container_name: filenest-backend
+    build:
+      context: .
+      target: production
+      args:
+        - PORT=${PORT}
+    ports:
       - '${PORT}:${PORT}'
-  env_file: 
-    - .env
+    env_file:
+      - .env
+    networks:
+      - app-network
 
-filenest-backend-dev: 
-  container_name: filenest-backend-dev
-  build: 
-    context: . 
-    target: dev
-    args: 
-     - PORT=${PORT}
-  ports:
+  filenest-backend-dev:
+    container_name: filenest-backend-dev
+    build:
+      context: .
+      target: dev
+      args:
+        - PORT=${PORT}
+    ports:
       - '${PORT}:${PORT}'
-  env_file: 
-    - .env
-  volumes: 
-    - .:/app
-    - node_modules:/app/node_modules
-postgres:
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    networks:
+      - app-network
+
+  postgres:
     image: postgres:14
     container_name: postgres_db
-    restart: always 
+    restart: always
     ports:
       - '5432:5432'
     environment:
       POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD:  ${DB_PASSWORD}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
   node_modules:
 
+networks:
+  app-network:

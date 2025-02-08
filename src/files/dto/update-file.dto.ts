@@ -25,9 +25,8 @@ export class UpdateFileDto extends PartialType(CreateFileDto) {
 
   @ApiPropertyOptional({
     description: 'URLs asociadas al archivo',
-    type: UrlDto,
   })
-  url?: UrlDto;
+  url?: string;
 
   @ApiPropertyOptional({
     description: 'Tipo de contenido del archivo',

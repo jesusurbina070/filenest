@@ -14,10 +14,10 @@ export class AwsS3Service {
   private readonly bucketName = process.env.BUCKET_NAME;
   constructor() {
     this.s3Client = new S3Client({
-      region: 'us-east-2',
+      region: process.env.BUCKET_REGION,
       credentials: {
-        accessKeyId: process.env.ACCESS_KEY_ID, // Tu Key
-        secretAccessKey: process.env.SECRET_ACCESS_KEY, // Tu Secret
+        accessKeyId: process.env.BUCKET_ACCESS_KEY_ID, // Tu Key
+        secretAccessKey: process.env.BUCKET_SECRET_ACCESS_KEY, // Tu Secret
       },
     });
   }

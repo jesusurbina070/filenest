@@ -63,27 +63,6 @@ export class AwsS3Controller {
     description: 'Clave única del archivo en AWS S3.',
     example: 'example-key.pdf',
   })
-  @ApiResponse({ status: 200, description: 'URL obtenida exitosamente.' })
-  @ApiResponse({ status: 404, description: 'Archivo no encontrado.' })
-  @ApiResponse({ status: 401, description: 'No autorizado.' })
-  async downloadFile(@Param('key') key: string, @Res() res: Response) {
-    try {
-      const fileStream = await this.awsS3Service.downloadFile(key);
-
-      res.set({
-        'Content-Type': 'application/octet-stream',
-        'Content-DIsposition': `attachment; filename=${key}`,
-      });
-
-      fileStream.pipe(res);
-    } catch (err) {
-      throw new HttpException(
-        `Error downloading file: ${err.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
   @Get(':key')
   @ApiOperation({ summary: 'Descargar un archivo de AWS S3' })
   @ApiParam({
