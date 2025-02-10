@@ -1,6 +1,7 @@
 services:
   filenest-backend:
     container_name: filenest-backend
+    restart: unless-stopped
     build:
       context: .
       target: production
@@ -27,6 +28,21 @@ services:
     volumes:
       - .:/app
       - node_modules:/app/node_modules
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf.template:/etc/nginx/nginx.conf.template
+    environment:
+      - INSTANCE_IP=${INSTANCE_IP}
+    command: /bin/sh -c "envsubst '$$INSTANCE_IP' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
+    depends_on:
+      - filenest-backend
     networks:
       - app-network
 

@@ -1,0 +1,12 @@
+*
+! /nginx.conf
+
+! /package.json
+
+! /package-lock.json
+
+! /tsconfig.prod.json
+
+! /tsconfig.json
+
+! /src

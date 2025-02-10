@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AwsS3Controller } from './aws-s3.controller';
-import { AwsS3Service } from './aws-s3.service';
+import { AwsS3Service } from '../services/aws-s3.service';
 
 describe('AwsS3Controller', () => {
   let controller: AwsS3Controller;

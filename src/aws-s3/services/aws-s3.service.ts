@@ -41,28 +41,6 @@ export class AwsS3Service {
     }
   }
 
-  async downloadFile(key: string): Promise<Readable> {
-    try {
-      const command = new GetObjectCommand({
-        Bucket: this.bucketName,
-        Key: key,
-      });
-
-      const response = await this.s3Client.send(command);
-
-      if (!response.Body) {
-        throw new HttpException('File not found', HttpStatus.NOT_FOUND);
-      }
-
-      const stream = response.Body as Readable;
-      return stream;
-    } catch (err) {
-      throw new HttpException(
-        `Error downloading file: ${err.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
 
   async getFileUrl(key: string) {
     try {

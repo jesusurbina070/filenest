@@ -9,7 +9,6 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
-import { UrlDto } from './url.dto';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 

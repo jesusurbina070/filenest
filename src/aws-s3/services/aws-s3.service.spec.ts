@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AwsS3Service } from './services/aws-s3.service';
+import { AwsS3Service } from './aws-s3.service';
 
 describe('AwsS3Service', () => {
   let service: AwsS3Service;
