@@ -1,7 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateFileDto } from './create-file.dto';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { UrlDto } from './url.dto';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 export class UpdateFileDto extends PartialType(CreateFileDto) {
