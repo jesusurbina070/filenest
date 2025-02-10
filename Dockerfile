@@ -10,13 +10,13 @@ ENV NODE_ENV=development
 
 RUN npm install -g @nestjs/cli
 
-COPY package*.json $DIR
+COPY package*.json $DIR/
 
 RUN echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ".npmrc" && \
     npm install --frozen-lockfile && \
     rm -f .npmrc
 
-COPY tsconfig*.json $DIR
+COPY tsconfig*.json $DIR/
 COPY src $DIR/src
 
 EXPOSE $PORT
