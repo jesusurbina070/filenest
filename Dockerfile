@@ -29,13 +29,13 @@ FROM base AS build
 RUN apk update && apk add --no-cache dumb-init
 
 
-COPY package*.json ./
+COPY package*.json $DIR/
 
 RUN echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ".npmrc" && \
     npm install --frozen-lockfile && \
     rm -f .npmrc
 
-COPY tsconfig*.json $DIR
+COPY tsconfig*.json $DIR/
 COPY src $DIR/src
 
 RUN npm run build && \ 
