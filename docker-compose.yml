@@ -36,8 +36,10 @@ services:
     container_name: nginx
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./nginx.conf.template:/etc/nginx/nginx.conf.template
+      - ./ssl:/etc/nginx/ssl:ro
     environment:
       - INSTANCE_IP=${INSTANCE_IP}
     command: /bin/sh -c "envsubst '$$INSTANCE_IP' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
