@@ -5,31 +5,28 @@ events {
 }
 
 http {
-    # Bloque para redirigir HTTP a HTTPS y permitir la verificación de Certbot
+    # Bloque para redirigir HTTP a HTTPS
     server {
         listen 80;
-        server_name ${INSTANCE_DOMAIN};
+        server_name ${INSTANCE_DNS};  # Acepta cualquier solicitud
 
-        location /.well-known/acme-challenge/ {
-            root /var/www/certbot;
-        }
         location / {
             return 301 https://$host$request_uri;
         }
     }
 
-    # Bloque para servir HTTPS
+    # Bloque para HTTPS
     server {
         listen 443 ssl;
-        server_name ${INSTANCE_DOMAIN};
+        server_name ${INSTANCE_DNS};  # O puedes especificar tu IP o DNS
 
-        ssl_certificate /etc/letsencrypt/live/${INSTANCE_DOMAIN}/fullchain.pem;
-        ssl_certificate_key /etc/letsencrypt/live/${INSTANCE_DOMAIN}/privkey.pem;
-        include /etc/letsencrypt/options-ssl-nginx.conf;
-        ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+        ssl_certificate /etc/nginx/ssl/selfsigned.crt;
+        ssl_certificate_key /etc/nginx/ssl/selfsigned.key;
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers HIGH:!aNULL:!MD5;
 
         location / {
-            proxy_pass http://filenest-backend:3000;
+            proxy_pass http://filenest-backend:3000;  # Asegúrate de que el backend esté en esa red
             proxy_http_version 1.1;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
