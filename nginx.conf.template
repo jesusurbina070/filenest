@@ -5,20 +5,28 @@ events {
 }
 
 http {
-    # Bloque para redirigir HTTP a HTTPS
+    # Bloque para redirigir HTTP a HTTPS (si lo deseas) o servir directamente
     server {
         listen 80;
-        server_name ${INSTANCE_DNS};  # Acepta cualquier solicitud
+        server_name ${INSTANCE_DNS};
+
+        # Si deseas redirigir HTTP a HTTPS:
+        # return 301 https://$host$request_uri;
 
         location / {
-            return 301 https://$host$request_uri;
+            proxy_pass http://filenest-backend:3000;
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
         }
     }
 
-    # Bloque para HTTPS
+    # Bloque para HTTPS (opcional, en caso de tener certificados)
     server {
         listen 443 ssl;
-        server_name ${INSTANCE_DNS};  # O puedes especificar tu IP o DNS
+        server_name ${INSTANCE_DNS};
 
         ssl_certificate /etc/nginx/ssl/selfsigned.crt;
         ssl_certificate_key /etc/nginx/ssl/selfsigned.key;
@@ -26,7 +34,7 @@ http {
         ssl_ciphers HIGH:!aNULL:!MD5;
 
         location / {
-            proxy_pass http://filenest-backend:3000;  # Asegúrate de que el backend esté en esa red
+            proxy_pass http://filenest-backend:3000;
             proxy_http_version 1.1;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
