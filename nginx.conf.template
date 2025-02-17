@@ -5,24 +5,28 @@ events {
 }
 
 http {
+    # Bloque para redirigir HTTP a HTTPS y permitir la verificación de Certbot
     server {
         listen 80;
-        server_name _;
+        server_name ${INSTANCE_DOMAIN};
 
+        location /.well-known/acme-challenge/ {
+            root /var/www/certbot;
+        }
         location / {
             return 301 https://$host$request_uri;
         }
     }
 
+    # Bloque para servir HTTPS
     server {
         listen 443 ssl;
-        server_name ${INSTANCE_IP};  # Se puede usar _ o la IP explícita
+        server_name ${INSTANCE_DOMAIN};
 
-        ssl_certificate /etc/nginx/ssl/selfsigned.crt;
-        ssl_certificate_key /etc/nginx/ssl/selfsigned.key;
-
-        ssl_protocols TLSv1.2 TLSv1.3;
-        ssl_ciphers HIGH:!aNULL:!MD5;
+        ssl_certificate /etc/letsencrypt/live/${INSTANCE_DOMAIN}/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/${INSTANCE_DOMAIN}/privkey.pem;
+        include /etc/letsencrypt/options-ssl-nginx.conf;
+        ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
         location / {
             proxy_pass http://filenest-backend:3000;
@@ -34,4 +38,3 @@ http {
         }
     }
 }
-
