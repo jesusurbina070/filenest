@@ -33,18 +33,17 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx
-    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf.template:/etc/nginx/nginx.conf.template:ro
-      - ./ssl:/etc/nginx/ssl:ro  # Directorio donde se encuentren los certificados (si usas HTTPS)
+      - type: bind
+        source: ./nginx.conf.template
+        target: /etc/nginx/nginx.conf.template
+        read_only: true
     environment:
       - INSTANCE_DNS=${INSTANCE_DNS}
     command: /bin/sh -c "envsubst '$$INSTANCE_DNS' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
-    depends_on:
-      - filenest-backend
     networks:
       - app-network
 
