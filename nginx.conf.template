@@ -5,7 +5,8 @@ events {
 }
 
 http {
-    # Bloque para redirigir HTTP a HTTPS y permitir la verificación de Certbot
+    resolver 127.0.0.11 valid=30s;
+
     server {
         listen 80;
         server_name ${INSTANCE_DOMAIN};
@@ -18,7 +19,6 @@ http {
         }
     }
 
-    # Bloque para servir HTTPS
     server {
         listen 443 ssl;
         server_name ${INSTANCE_DOMAIN};
@@ -35,6 +35,7 @@ http {
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header Connection "upgrade";
         }
     }
 }
