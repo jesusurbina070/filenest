@@ -47,6 +47,7 @@ services:
 
 volumes:
   postgres_data:
+  node_modules:
 
 networks:
   app-network:
